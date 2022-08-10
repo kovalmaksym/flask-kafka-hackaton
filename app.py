@@ -10,11 +10,17 @@ app = Flask(__name__)
 turbo = Turbo(app)
 list = []
 
-consumer = KafkaConsumer(bootstrap_servers='rover-cluster-kafka-bootstrap:9092',
+SERVER = 'rover-cluster-kafka-bootstrap:9092'
+# SERVER = 'localhost:9092'
+
+# TOPIC = 'quickstart-events'
+TOPIC = 'rover-metrics'
+
+consumer = KafkaConsumer(bootstrap_servers=SERVER,
                         auto_offset_reset='earliest',   
                         )
                         
-consumer.subscribe(['rover-metrics'])
+consumer.subscribe([TOPIC])
 
 
 @app.route("/")
@@ -25,7 +31,7 @@ def index():
 @app.context_processor
 def inject_load():
     try:
-        list.append(next(consumer).value)
+        list.append(next(consumer).value.decode("utf-8"))
     except:
         pass
     print(list)
