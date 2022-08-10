@@ -25,9 +25,10 @@ def index():
 @app.context_processor
 def inject_load():
     try:
-        list.append(next(consumer))
+        list.append(next(consumer).value)
     except:
         pass
+    print(list)
     return {'msg': list }
 
 def update_load():
